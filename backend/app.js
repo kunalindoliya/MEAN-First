@@ -29,6 +29,30 @@ app.post('/api/post',async (req,res,next)=>{
     console.log(e);
   }
 });
+
+app.put('/api/post/:id',async (req,res,next)=>{
+  const post = new Post({
+    _id: req.params.id,
+    title: req.body.title,
+    content: req.body.content
+  });
+  try{
+    await Post.updateOne({_id:req.params.id},post);
+    res.status(200).json({message:'Updating successful'});
+  }catch (e) {
+    console.log(e);
+  }
+});
+
+app.get('/api/post/:id',async (req,res,next)=>{
+  const post=await Post.findById(req.params.id);
+  if(post){
+    res.status(200).json(post);
+  } else {
+    res.status(404).json({message:'Post Not Found'});
+  }
+});
+
 app.get('/api/posts',async (req,res,next)=>{
   const posts=await Post.find();
   res.status(200).json({posts:posts});
