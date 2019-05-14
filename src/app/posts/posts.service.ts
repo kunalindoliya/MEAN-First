@@ -31,7 +31,7 @@ export class PostsService {
   }
 
   getPost(id: string) {
-    return this.http.get<{_id: string, title: string, content: string}>('http://localhost:3000/api/post/' + id);
+    return this.http.get<{_id: string, title: string, content: string}>('http://localhost:3000/api/posts/' + id);
   }
 
   getPostUpdateListener() {
@@ -40,27 +40,28 @@ export class PostsService {
 
   addPost(title: string, content: string) {
     const post: PostModel = {id: null, title, content};
-    this.http.post<{ message: string, postId: string }>('http://localhost:3000/api/post', post)
+    this.http.post<{ message: string, postId: string }>('http://localhost:3000/api/posts', post)
       .subscribe((response) => {
         post.id = response.postId;
         this.posts.push(post);
         this.postsUpdated.next([...this.posts]);
-        this.router.navigate(['']);
+        this.router.navigate(['/']);
       });
   }
 
   updatePost(id: string, title: string, content: string) {
     const post: PostModel = {id, title, content};
-    this.http.put('http://localhost:3000/api/post/' + id, post)
+    this.http.put('http://localhost:3000/api/posts/' + id, post)
       .subscribe((response) => {
         const oldPostIndex = this.posts.findIndex(p => p.id === id);
         this.posts[oldPostIndex] = post;
         this.postsUpdated.next([...this.posts]);
+        this.router.navigate(['/']);
       });
   }
 
   deletePost(id: string) {
-    this.http.delete('http://localhost:3000/api/post/' + id)
+    this.http.delete('http://localhost:3000/api/posts/' + id)
       .subscribe((result) => {
         this.posts = this.posts.filter(post => post.id !== id);
         this.postsUpdated.next([...this.posts]);
