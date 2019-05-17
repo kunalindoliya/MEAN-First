@@ -10,6 +10,7 @@ mongoose.connect('mongodb://localhost:27017/mean-complete',{useNewUrlParser: tru
   .catch(err=>console.log(err));
 
 app.use(bodyParser.json());
+app.use('/backend/files',express.static('backend/files'));
 
 app.use((req,res,next)=>{
   res.setHeader('Access-Control-Allow-Origin','*');
