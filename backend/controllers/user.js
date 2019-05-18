@@ -26,7 +26,7 @@ exports.login = async (req, res, next) => {
       return res.status(401).json({message: 'Wrong password'});
     }
     const token = jwt.sign({email: user.email, userId: user._id}, 'mysecret', {expiresIn: '1h'});
-    res.status(200).json({token:token, expiresIn: 3600});
+    res.status(200).json({token:token, expiresIn: 3600, userId:user._id});
   } catch (e) {
     console.log(e);
   }

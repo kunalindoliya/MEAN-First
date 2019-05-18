@@ -26,7 +26,8 @@ exports.createPost = async (req, res, next) => {
   const post = new Post({
     title: req.body.title,
     content: req.body.content,
-    imagePath: url+'/'+req.file.path
+    imagePath: url+'/'+req.file.path,
+    creator: req.userData.userId
   });
   try {
     const createdPost = await post.save();
@@ -53,11 +54,16 @@ exports.updatePost = async (req, res, next) => {
     _id: req.params.id,
     title: req.body.title,
     content: req.body.content,
-    imagePath: imagePath
+    imagePath: imagePath,
+    creator: req.userData.userId
   });
   try {
-    await Post.updateOne({_id: req.params.id}, post);
-    res.status(200).json({message: 'Updating successful'});
+    const result = await Post.updateOne({_id: req.params.id, creator:req.userData.userId}, post);
+    if(result.nModified > 0){
+      res.status(200).json({message: 'Updating successful'});
+    } else {
+      res.status(401).json({message: 'Not Authorized'});
+    }
   } catch (e) {
     console.log(e);
   }
@@ -65,8 +71,12 @@ exports.updatePost = async (req, res, next) => {
 
 exports.deletePost = async (req, res, next) => {
   try {
-    await Post.deleteOne({_id: req.params.id});
-    res.status(200).json({message: 'Deletion successful'});
+    const result = await Post.deleteOne({_id: req.params.id, creator:req.userData.userId});
+    if(result.n > 0){
+      res.status(200).json({message: 'Deletion successful'});
+    } else {
+      res.status(401).json({message: 'Not Authorized'});
+    }
   } catch (e) {
     console.log(e);
   }
