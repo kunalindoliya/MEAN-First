@@ -1,8 +1,15 @@
 const Post = require('../models/post');
 
 exports.getPosts = async (req, res, next) => {
-  const posts = await Post.find();
-  res.status(200).json({posts: posts});
+  const pageSize=+req.query.pageSize;
+  const currentPage=+req.query.currentPage;
+  const query=Post.find();
+  if(pageSize && currentPage){
+     query.skip(pageSize * (currentPage-1)).limit(pageSize);
+  }
+  const posts = await query;
+  const totalPosts = await Post.countDocuments();
+  res.status(200).json({posts: posts, maxPosts:totalPosts});
 };
 
 exports.getPost = async (req, res, next) => {

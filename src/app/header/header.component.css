@@ -4,6 +4,7 @@ a {
 }
 ul {
   list-style-type: none;
+  display: flex;
 }
 .spacer {
   flex: 1 1 auto;
