@@ -68,7 +68,7 @@ exports.updatePost = async (req, res, next) => {
   });
   try {
     const result = await Post.updateOne({_id: req.params.id, creator:req.userData.userId}, post);
-    if(result.nModified > 0){
+    if(result.n > 0){
       res.status(200).json({message: 'Updating successful'});
     } else {
       res.status(401).json({message: 'Not Authorized'});
